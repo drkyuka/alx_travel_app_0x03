@@ -11,6 +11,7 @@ celery = "*"
 rabbitmq = "*"
 drf-yasg = "*"
 django-environ = "*"
+django-debug-toolbar = "*"
 
 [dev-packages]
 
