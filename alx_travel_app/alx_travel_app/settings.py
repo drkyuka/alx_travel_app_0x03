@@ -45,8 +45,8 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'listings',
-    'debug_toolbar'
+    'debug_toolbar',
+    'alx_travel_app.listings',
 ]
 
 MIDDLEWARE = [
@@ -86,7 +86,7 @@ WSGI_APPLICATION = 'alx_travel_app.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',
-        'NAME': BASE_DIR / env('MYSQL_DATABASE_NAME'),
+        'NAME': env('MYSQL_DATABASE_NAME'),
         'USER': env('MYSQL_DATABASE_USER'),
         'PASSWORD': env('MYSQL_DATABASE_PASSWORD'),
         'HOST': env('MYSQL_DATABASE_HOST'),
