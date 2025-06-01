@@ -1,8 +1,11 @@
 """serializers.py"""
 
+from decimal import Decimal
+
 from django.db.models import Avg
 from rest_framework import serializers
-from .models import Listing, User, Booking, Review
+
+from .models import Booking, Listing, Review, User
 
 
 class UserSerializer(serializers.ModelSerializer):
@@ -23,9 +26,12 @@ class BookingSerializer(serializers.ModelSerializer):
     Serializer for the Booking model.
     """
 
-    booked_by = UserSerializer()
+    booked_by = UserSerializer(read_only=True)
     amount_due = serializers.SerializerMethodField(
         method_name="get_amount_due", read_only=True
+    )
+    user_id = serializers.UUIDField(
+        write_only=True, required=False, source="booked_by.user_id"
     )
 
     class Meta:
@@ -58,8 +64,8 @@ class BookingSerializer(serializers.ModelSerializer):
             if Booking.objects.filter(
                 listing=listing,
                 booking_status="CONFIRMED",
-                start_date__lt=attrs["check_out_date"],
-                end_date__gt=attrs["check_in_date"],
+                check_in_date__lt=attrs["check_out_date"],
+                check_out_date__gt=attrs["check_in_date"],
             ).exists():
                 raise serializers.ValidationError(
                     "Listing is already booked for the selected dates."
@@ -69,7 +75,7 @@ class BookingSerializer(serializers.ModelSerializer):
         if attrs.get("number_of_guests") and listing:
             if attrs.get("number_of_guests") > listing.allowable_guests:
                 raise serializers.ValidationError(
-                    f"Number of guests cannot exceed the listing's maximum capacity of {listing.max_guests}."
+                    f"Number of guests cannot exceed the listing's maximum capacity of {listing.allowable_guests}."
                 )
 
         return attrs
@@ -90,6 +96,7 @@ class ReviewSerializer(serializers.ModelSerializer):
     """
 
     reviewed_by = UserSerializer(read_only=True)
+    rating = serializers.IntegerField(min_value=1, max_value=5)
 
     class Meta:
         """Meta class for ReviewSerializer."""
@@ -116,6 +123,12 @@ class ListingSerializer(serializers.ModelSerializer):
     reviews = ReviewSerializer(many=True, read_only=True)
     bookings = BookingSerializer(many=True, read_only=True)
     rating = serializers.SerializerMethodField(method_name="get_average_rating")
+    price_per_night = serializers.DecimalField(
+        max_digits=10, decimal_places=2, min_value=Decimal("0.01")
+    )
+    allowable_guests = serializers.IntegerField(min_value=1)
+    number_of_bedrooms = serializers.IntegerField(min_value=1, max_value=100)
+    number_of_bathrooms = serializers.IntegerField(min_value=1, max_value=100)
 
     class Meta:
         """Meta class for ListingSerializer."""

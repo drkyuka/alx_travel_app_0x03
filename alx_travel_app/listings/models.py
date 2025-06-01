@@ -108,7 +108,9 @@ class Booking(models.Model):
     """
 
     booking_id = models.UUIDField(primary_key=True, editable=False, default=uuid4)
-    listing = models.ForeignKey(Listing, on_delete=models.CASCADE)
+    listing = models.ForeignKey(
+        Listing, on_delete=models.CASCADE, related_name="bookings"
+    )
     booked_by = models.ForeignKey(User, on_delete=models.CASCADE)
     number_of_guests = models.PositiveIntegerField(
         default=0,
