@@ -52,7 +52,7 @@ INSTALLED_APPS = [
     "django.contrib.messages",
     "django.contrib.staticfiles",
     "debug_toolbar",
-    "alx_travel_app.listings",
+    "listings",
 ]
 
 MIDDLEWARE = [

@@ -18,12 +18,12 @@ try:
     from faker import Faker
 
     fake = Faker()
-except ImportError:
+except ImportError as exc:
     raise ImportError(
         "The Faker package is required. Install it with 'pip install faker'"
-    )
+    ) from exc
 
-from alx_travel_app.listings.models import Booking, Listing, Review, User
+from listings.models import Booking, Listing, Review, User
 
 
 class Command(BaseCommand):
