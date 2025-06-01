@@ -36,6 +36,7 @@ mysqlclient = "*"
 neomodel = "*"
 django = "*"
 djangorestframework = "*"
+faker = "*"
 
 [dev-packages]
 
