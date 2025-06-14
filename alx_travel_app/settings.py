@@ -52,6 +52,9 @@ INSTALLED_APPS = [
     "django.contrib.messages",
     "django.contrib.staticfiles",
     "debug_toolbar",
+    "rest_framework",
+    "rest_framework_simplejwt",
+    "rest_framework.authtoken",
     "listings",
 ]
 
@@ -160,3 +163,58 @@ INTERNAL_IPS = [
     "127.0.0.1",
     # ...
 ]
+
+
+# Authentication settings
+AUTH_USER_MODEL = "listings.User"
+REST_FRAMEWORK = {
+    "DEFAULT_AUTHENTICATION_CLASSES": (
+        "rest_framework_simplejwt.authentication.JWTAuthentication",
+        "rest_framework.authentication.SessionAuthentication",
+        "rest_framework.authentication.BasicAuthentication",
+    ),
+    "DEFAULT_PERMISSION_CLASSES": [
+        "rest_framework.permissions.IsAuthenticated",
+    ],
+}
+
+# CORS settings
+CORS_ALLOWED_ORIGINS = env.list(
+    "CORS_ALLOWED_ORIGINS", default=["http://localhost:3000"]
+)
+# CORS_ALLOW_CREDENTIALS = True
+# CORS_ALLOW_HEADERS = env.list("CORS_ALLOW_HEADERS", default=["*"])
+# CORS_ALLOW_METHODS = env.list("CORS_ALLOW_METHODS", default=["GET", "POST", "PUT", "PATCH", "DELETE"])
+# CORS_ALLOW_ALL_ORIGINS = True
+# CSRF settings
+CSRF_TRUSTED_ORIGINS = env.list(
+    "CSRF_TRUSTED_ORIGINS", default=["http://localhost:3000"]
+)
+# CSRF_COOKIE_SECURE = True
+# CSRF_COOKIE_HTTPONLY = True
+# CSRF_COOKIE_SAMESITE = "Lax"
+
+
+SIMPLE_JWT = {
+    "ACCESS_TOKEN_LIFETIME": env.timedelta("JWT_ACCESS_TOKEN_LIFETIME", default="5m"),
+    "REFRESH_TOKEN_LIFETIME": env.timedelta("JWT_REFRESH_TOKEN_LIFETIME", default="1d"),
+    "ROTATE_REFRESH_TOKENS": env.bool("JWT_ROTATE_REFRESH_TOKENS", default=False),
+    "BLACKLIST_AFTER_ROTATION": env.bool("JWT_BLACKLIST_AFTER_ROTATION", default=False),
+    "UPDATE_LAST_LOGIN": env.bool("JWT_UPDATE_LAST_LOGIN", default=False),
+    "ALGORITHM": env("JWT_ALGORITHM", default="HS256"),
+    "SIGNING_KEY": env("JWT_SIGNING_KEY", default=SECRET_KEY),
+    "VERIFYING_KEY": env("JWT_VERIFYING_KEY", default=""),
+    "AUDIENCE": env("JWT_AUDIENCE", default=None),
+    "ISSUER": env("JWT_ISSUER", default=None),
+    "JSON_ENCODER": env("JWT_JSON_ENCODER", default=None),
+    "JWK_URL": env("JWT_JWK_URL", default=None),
+    "LEEWAY": env.int("JWT_LEEWAY", default=0),
+    "AUTH_HEADER_TYPES": env.list("JWT_AUTH_HEADER_TYPES", default=["Bearer"]),
+    "AUTH_HEADER_NAME": env("JWT_AUTH_HEADER_NAME", default="HTTP_AUTHORIZATION"),
+    "USER_ID_FIELD": env("JWT_USER_ID_FIELD", default="user_id"),
+    "USER_ID_CLAIM": env("JWT_USER_ID_CLAIM", default="user_id"),
+    "USER_AUTHENTICATION_RULE": env(
+        "JWT_USER_AUTHENTICATION_RULE",
+        default="rest_framework_simplejwt.authentication.default_user_authentication_rule",
+    ),
+}

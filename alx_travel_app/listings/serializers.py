@@ -1,7 +1,5 @@
 """serializers.py"""
 
-from decimal import Decimal
-
 from django.db.models import Avg
 from rest_framework import serializers
 
@@ -18,7 +16,7 @@ class UserSerializer(serializers.ModelSerializer):
 
         model = User
         fields = "__all__"
-        read_only_fields = ("user_id", "created_at", "updated_at")
+        read_only_fields = ("user_id",)
 
 
 class BookingSerializer(serializers.ModelSerializer):
@@ -26,20 +24,12 @@ class BookingSerializer(serializers.ModelSerializer):
     Serializer for the Booking model.
     """
 
-    booked_by = UserSerializer(read_only=True)
-    amount_due = serializers.SerializerMethodField(
-        method_name="get_amount_due", read_only=True
-    )
-    user_id = serializers.UUIDField(
-        write_only=True, required=False, source="booked_by.user_id"
-    )
-
     class Meta:
         """Meta class for BookingSerializer."""
 
         model = Booking
         fields = "__all__"
-        read_only_fields = ("booking_id", "created_at", "updated_at", "amount_due")
+        read_only_fields = ("booking_id", "amount_due")
 
     def validate(self, attrs):
         """
@@ -61,7 +51,7 @@ class BookingSerializer(serializers.ModelSerializer):
         # Check if the listing is available for the requested dates
         listing = attrs.get("listing")
         if listing:
-            if Booking.objects.filter(
+            if Booking.bookings.filter(
                 listing=listing,
                 booking_status="CONFIRMED",
                 check_in_date__lt=attrs["check_out_date"],
@@ -95,15 +85,11 @@ class ReviewSerializer(serializers.ModelSerializer):
     Serializer for the Review model.
     """
 
-    reviewed_by = UserSerializer(read_only=True)
-    rating = serializers.IntegerField(min_value=1, max_value=5)
-
     class Meta:
         """Meta class for ReviewSerializer."""
 
         model = Review
         fields = "__all__"
-        read_only_fields = ("review_id", "created_at", "updated_at")
 
     def validate(self, attrs):
         """
@@ -119,23 +105,11 @@ class ListingSerializer(serializers.ModelSerializer):
     Serializer for the Listing model.
     """
 
-    host = UserSerializer()
-    reviews = ReviewSerializer(many=True, read_only=True)
-    bookings = BookingSerializer(many=True, read_only=True)
-    rating = serializers.SerializerMethodField(method_name="get_average_rating")
-    price_per_night = serializers.DecimalField(
-        max_digits=10, decimal_places=2, min_value=Decimal("0.01")
-    )
-    allowable_guests = serializers.IntegerField(min_value=1)
-    number_of_bedrooms = serializers.IntegerField(min_value=1, max_value=100)
-    number_of_bathrooms = serializers.IntegerField(min_value=1, max_value=100)
-
     class Meta:
         """Meta class for ListingSerializer."""
 
         model = Listing
         fields = "__all__"
-        read_only_fields = ("listing_id", "created_at", "updated_at")
 
     def get_average_rating(self, obj):
         """

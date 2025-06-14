@@ -37,6 +37,9 @@ neomodel = "*"
 django = "*"
 djangorestframework = "*"
 faker = "*"
+djangorestframework-simplejwt = "*"
+dotenv = "*"
+python-dotenv = "*"
 
 [dev-packages]
 
