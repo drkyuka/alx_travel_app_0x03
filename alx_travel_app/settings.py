@@ -14,6 +14,7 @@ https://docs.djangoproject.com/en/5.2/ref/settings/
 # It includes configurations for database, middleware, installed apps, and other settings.
 # import debug_toolbar
 from pathlib import Path
+import datetime
 
 import environ
 
@@ -23,6 +24,7 @@ env = environ.Env(
     SECRET_KEY=(str, "django-insecure-1234567890abcdefghijklmnopqrstuvwxyz"),
     DEBUG=(bool, True),
 )
+
 # Read .env file, but don't fail if it doesn't exist
 environ.Env.read_env(Path(__file__).resolve().parent / ".env")
 
@@ -167,6 +169,8 @@ INTERNAL_IPS = [
 
 # Authentication settings
 AUTH_USER_MODEL = "listings.User"
+
+# REST framework settings
 REST_FRAMEWORK = {
     "DEFAULT_AUTHENTICATION_CLASSES": (
         "rest_framework_simplejwt.authentication.JWTAuthentication",
@@ -196,8 +200,12 @@ CSRF_TRUSTED_ORIGINS = env.list(
 
 
 SIMPLE_JWT = {
-    "ACCESS_TOKEN_LIFETIME": env.timedelta("JWT_ACCESS_TOKEN_LIFETIME", default="5m"),
-    "REFRESH_TOKEN_LIFETIME": env.timedelta("JWT_REFRESH_TOKEN_LIFETIME", default="1d"),
+    "ACCESS_TOKEN_LIFETIME": datetime.timedelta(
+        minutes=env.int("JWT_ACCESS_TOKEN_LIFETIME_MINUTES", default=5)
+    ),
+    "REFRESH_TOKEN_LIFETIME": datetime.timedelta(
+        days=env.int("JWT_REFRESH_TOKEN_LIFETIME_DAYS", default=1)
+    ),
     "ROTATE_REFRESH_TOKENS": env.bool("JWT_ROTATE_REFRESH_TOKENS", default=False),
     "BLACKLIST_AFTER_ROTATION": env.bool("JWT_BLACKLIST_AFTER_ROTATION", default=False),
     "UPDATE_LAST_LOGIN": env.bool("JWT_UPDATE_LAST_LOGIN", default=False),

@@ -20,7 +20,7 @@ try:
     fake = Faker()
 except ImportError as exc:
     raise ImportError(
-        "The Faker package is required. Install it with 'pip install faker'"
+        "The Faker package is required. Install it with 'pipenv install faker'"
     ) from exc
 
 from listings.models import Booking, Listing, Review, User
@@ -48,19 +48,19 @@ class Command(BaseCommand):
 
         # Create sample users
         self.stdout.write("Creating sample users...")
-        users = self._create_users(20)  # Create 20 users
+        users = self._create_users(19)  # Create 19 users
 
         # Create sample listings
         self.stdout.write("Creating sample listings...")
-        listings = self._create_listings(users, 50)  # Create 50 listings
+        listings = self._create_listings(users, 12)  # Create 12 listings
 
         # Create sample bookings
         self.stdout.write("Creating sample bookings...")
-        bookings = self._create_bookings(users, listings, 100)  # Create 100 bookings
+        bookings = self._create_bookings(users, listings, 30)  # Create 30 bookings
 
         # Create sample reviews
         self.stdout.write("Creating sample reviews...")
-        self._create_reviews(users, listings, 150)  # Create 150 reviews
+        self._create_reviews(users, listings, 51)  # Create 51 reviews
 
         self.stdout.write(
             self.style.SUCCESS(

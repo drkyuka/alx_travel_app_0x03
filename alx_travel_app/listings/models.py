@@ -9,7 +9,11 @@ from enum import Enum
 from uuid import uuid4
 
 from django.contrib.auth.models import AbstractUser
-from django.core.validators import MaxValueValidator, MinValueValidator
+from django.core.validators import (
+    MaxValueValidator,
+    MinLengthValidator,
+    MinValueValidator,
+)
 from django.db import models
 from dotenv import load_dotenv
 
@@ -26,6 +30,13 @@ class User(AbstractUser):
         primary_key=True, unique=True, null=False, editable=False, default=uuid4
     )
     email = models.EmailField(unique=True)
+    password = models.CharField(
+        max_length=128,
+        validators=[
+            MinLengthValidator(8),
+        ],
+        help_text="Password must be at least 8 characters long and contain a mix of letters, numbers, and special characters.",
+    )
 
     # Add related_name to avoid conflicts with default User model
     groups = models.ManyToManyField(

@@ -1,9 +1,14 @@
 """serializers.py"""
 
+from dotenv import load_dotenv
+import os
 from django.db.models import Avg
 from rest_framework import serializers
 
 from .models import Booking, Listing, Review, User
+
+
+load_dotenv()
 
 
 class UserSerializer(serializers.ModelSerializer):
@@ -15,8 +20,29 @@ class UserSerializer(serializers.ModelSerializer):
         """Meta class for UserSerializer."""
 
         model = User
-        fields = "__all__"
+        fields = ["email", "password", "first_name", "last_name"]
         read_only_fields = ("user_id",)
+        extra_kwargs = {
+            "password": {
+                "write_only": True,
+                "required": False,
+            },
+            "email": {"required": True},
+        }
+
+    def create(self, validated_data):
+        """
+        Create a new user instance.
+        """
+        # Ensure password is set correctly
+        password = validated_data.pop("password", os.getenv("DEFAULT_PASSWORD"))
+        user = User(**validated_data)
+
+        if password:
+            user.set_password(password)
+
+        user.save()
+        return user
 
 
 class BookingSerializer(serializers.ModelSerializer):

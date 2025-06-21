@@ -40,6 +40,7 @@ faker = "*"
 djangorestframework-simplejwt = "*"
 dotenv = "*"
 python-dotenv = "*"
+requests = "*"
 
 [dev-packages]
 

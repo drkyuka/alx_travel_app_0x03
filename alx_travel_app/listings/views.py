@@ -5,6 +5,7 @@
 
 from rest_framework.viewsets import ModelViewSet
 from rest_framework.permissions import IsAuthenticated
+from rest_framework_simplejwt.authentication import JWTAuthentication
 from .models import Listing, User, Booking, Review
 from .serializers import (
     ListingSerializer,
@@ -26,6 +27,7 @@ class ListingViewSet(ModelViewSet):
     # serializer_class = ListingSerializer
 
     serializer_class = ListingSerializer
+    authentication_classes = [JWTAuthentication]
     queryset = Listing.listings.all()
 
 
@@ -39,6 +41,7 @@ class UserViewSet(ModelViewSet):
     # serializer_class = UserSerializer
 
     serializer_class = UserSerializer
+    authentication_classes = [JWTAuthentication]
     queryset = User.objects.all()
 
 
@@ -52,6 +55,7 @@ class BookingViewSet(ModelViewSet):
     # serializer_class = BookingSerializer
 
     serializer_class = BookingSerializer
+    authentication_classes = [JWTAuthentication]
     queryset = Booking.bookings.all()
 
 
