@@ -4,6 +4,7 @@ This module defines the data structures used in the application, including
 listings, users, bookings, and reviews.
 """
 
+from ast import mod
 import os
 from enum import Enum
 from uuid import uuid4
@@ -265,3 +266,43 @@ class Review(models.Model):
 
     def __str__(self):
         return f"Review for {self.listing.title} by {self.reviewed_by.name}"
+
+
+class Payment(models.Model):
+    """
+    Model representing a payment for a booking.
+    """
+
+    payments = models.Manager()
+    transaction_id = models.UUIDField(primary_key=True, editable=False, default=uuid4)
+    payer = models.ForeignKey(
+        User, on_delete=models.CASCADE, related_name="payments_payer"
+    )
+    payee = models.ForeignKey(
+        User, on_delete=models.CASCADE, related_name="payments_payee"
+    )
+    booking = models.ForeignKey(
+        Booking, on_delete=models.CASCADE, related_name="payment_booking"
+    )
+    amount = models.DecimalField(
+        max_digits=10,
+        decimal_places=2,
+        validators=[MinValueValidator(0.01)],
+    )
+    transaction_date = models.DateTimeField(auto_now_add=True)
+    status = models.CharField(
+        max_length=50,
+        blank=True,
+        null=True,
+        choices=[
+            ("PENDING", "Pending"),
+            ("COMPLETED", "Completed"),
+            ("FAILED", "Failed"),
+            ("CANCELLED", "Cancelled"),
+        ],
+        default="PENDING",
+        help_text="Status of the payment transaction.",
+    )
+
+    def __str__(self):
+        return f"Payment for {self.booking.listing.title} - Amount: {self.amount} USD by {self.payer.name} on {self.transaction_date} with status {self.status}"

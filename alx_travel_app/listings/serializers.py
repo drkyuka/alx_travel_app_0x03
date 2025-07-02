@@ -5,7 +5,7 @@ import os
 from django.db.models import Avg
 from rest_framework import serializers
 
-from .models import Booking, Listing, Review, User
+from .models import Booking, Listing, Review, User, Payment
 
 
 load_dotenv()

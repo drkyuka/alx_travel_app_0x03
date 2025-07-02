@@ -71,3 +71,17 @@ class ReviewViewSet(ModelViewSet):
     serializer_class = ReviewSerializer
     permission_classes = [IsAuthenticated]
     queryset = Review.reviews.all()
+
+
+class PaymentViewSet(ModelViewSet):
+    """
+    A viewset for viewing and editing payment instances.
+    """
+
+    # Assuming you have a Payment model and a PaymentSerializer
+    # queryset = Payment.objects.all()
+    # serializer_class = PaymentSerializer
+
+    serializer_class = PaymentSerializer
+    authentication_classes = [JWTAuthentication]
+    queryset = Payment.objects.all()

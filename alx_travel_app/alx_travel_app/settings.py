@@ -26,7 +26,6 @@ https://docs.djangoproject.com/en/5.2/ref/settings/
 # This file contains the settings for the Django project.
 # It includes configurations for database, middleware, installed apps, and other settings.
 # import debug_toolbar
-from pathlib import Path
 
 import environ
 
@@ -66,6 +65,7 @@ INSTALLED_APPS = [
     "django.contrib.staticfiles",
     "debug_toolbar",
     "listings",
+    # "django_chapa",
 ]
 
 MIDDLEWARE = [
@@ -173,3 +173,9 @@ INTERNAL_IPS = [
     "127.0.0.1",
     # ...
 ]
+
+
+# # Chapa payment settings
+# CHAPA_SECRET = env("CHAPA_SECRET_KEY")
+# CHAPA_API_URL = ""
+# CHAPA_API_VERSION = "v1"
