@@ -6,12 +6,13 @@
 from rest_framework.viewsets import ModelViewSet
 from rest_framework.permissions import IsAuthenticated
 from rest_framework_simplejwt.authentication import JWTAuthentication
-from .models import Listing, User, Booking, Review
+from .models import Listing, User, Booking, Review, Payment
 from .serializers import (
     ListingSerializer,
     UserSerializer,
     BookingSerializer,
     ReviewSerializer,
+    PaymentSerializer,
 )
 
 # Create your views here.
@@ -84,4 +85,4 @@ class PaymentViewSet(ModelViewSet):
 
     serializer_class = PaymentSerializer
     authentication_classes = [JWTAuthentication]
-    queryset = Payment.objects.all()
+    queryset = Payment.payments.all()

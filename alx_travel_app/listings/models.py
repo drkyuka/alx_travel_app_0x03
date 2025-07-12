@@ -4,7 +4,6 @@ This module defines the data structures used in the application, including
 listings, users, bookings, and reviews.
 """
 
-from ast import mod
 import os
 from enum import Enum
 from uuid import uuid4
@@ -16,12 +15,9 @@ from django.core.validators import (
     MinValueValidator,
 )
 from django.db import models
-from dotenv import load_dotenv
+
 
 # Create your models here.
-load_dotenv()
-
-
 class User(AbstractUser):
     """
     Model representing a user profile.
@@ -104,6 +100,11 @@ class Listing(models.Model):
     listing_id = models.UUIDField(primary_key=True, editable=False, default=uuid4)
     title = models.CharField(max_length=255)
     description = models.TextField()
+
+    host = models.ForeignKey(
+        User, on_delete=models.CASCADE, related_name="listings_host"
+    )
+
     listing_type = models.CharField(
         max_length=50,
         choices=[

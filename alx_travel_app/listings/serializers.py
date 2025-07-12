@@ -1,5 +1,6 @@
 """serializers.py"""
 
+from calendar import c
 from dotenv import load_dotenv
 import os
 from django.db.models import Avg
@@ -143,3 +144,23 @@ class ListingSerializer(serializers.ModelSerializer):
         """
         avg = obj.reviews.aggregate(avg_rating=Avg("rating"))["avg_rating"]
         return float(avg) if avg else 0.0
+
+
+class PaymentSerializer(serializers.ModelSerializer):
+    """
+    Serializer for the Payment model.
+    """
+
+    class Meta:
+        """Meta class for PaymentSerializer."""
+
+        model = Payment
+        fields = "__all__"
+
+    def validate(self, attrs):
+        """
+        Validate that the amount is positive.
+        """
+        if attrs["amount"] <= 0:
+            raise serializers.ValidationError("Payment amount must be positive.")
+        return attrs
