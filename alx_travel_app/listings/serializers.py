@@ -1,11 +1,9 @@
 """serializers.py"""
 
-from calendar import c
-from dotenv import load_dotenv
 import os
 from django.db.models import Avg
 from rest_framework import serializers
-
+from dotenv import load_dotenv
 from .models import Booking, Listing, Review, User, Payment
 
 
